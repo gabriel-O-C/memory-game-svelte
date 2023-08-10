@@ -34,11 +34,42 @@
 {#if state === 'playing'}
 	<div class="cards">
 		{#each grid as card, index}
-			<button>
 				<div class="card">
 					{card}
 				</div>
-			</button>
 		{/each}
 	</div>
 {/if}
+
+{#if state === 'lost'}
+	<h1>You Lost! 💩</h1>
+	<button on:click={() => (state = 'playing')}>Play Again!</button>
+{/if}
+
+{#if state === 'won'}
+	<h1>You Lost! 🎉</h1>
+	<button on:click={() => (state = 'playing')}>Play Again!</button>
+{/if}
+
+<style>
+	.cards {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+    gap: 0.4rem;
+	}
+
+	.card {
+		height: 140px;
+		width: 140px;
+		font-size: 4rem;
+		background-color: var(--bg-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+
+		&.selected {
+			border: 4px solid var(--border);
+		}
+	}
+</style>
