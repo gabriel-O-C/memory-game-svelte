@@ -12,7 +12,7 @@
 
 	let timerId: NodeJS.Timer | null = null;
 
-	let time = 20;
+	let time = 60;
 	function startGameTimer() {
 		function countdown() {
 			state !== 'paused' ? (time -= 1) : null;
@@ -54,13 +54,17 @@
 	}
 	function handlePlayAgain() {
 		state = 'playing';
-		time = 20;
+		time = 60;
+	}
+  function gameWon() {
+		state = 'won'
 	}
 	$: if (state === 'playing') {
 		!timerId && startGameTimer();
 	}
 
 	$: time === 0 && gameLost();
+  $: maxMatches === matches.length && gameWon()
 </script>
 
 {#if state === 'start'}
