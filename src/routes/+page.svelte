@@ -50,21 +50,21 @@
 		}
 		setTimeout(() => {
 			selected = [];
-		}, 300);
+		}, 500);
 	}
 	function handlePlayAgain() {
 		state = 'playing';
 		time = 60;
 	}
-  function gameWon() {
-		state = 'won'
+	function gameWon() {
+		state = 'won';
 	}
 	$: if (state === 'playing') {
 		!timerId && startGameTimer();
 	}
 
 	$: time === 0 && gameLost();
-  $: maxMatches === matches.length && gameWon()
+	$: maxMatches === matches.length && gameWon();
 </script>
 
 {#if state === 'start'}
@@ -95,8 +95,9 @@
 				on:click={() => selectCard(index)}
 				class:selected={isSelected}
 				disabled={isSelectedOrMatched}
+				class:flip={isSelectedOrMatched}
 			>
-				<div class:match>
+				<div class:match class="back">
 					{card}
 				</div>
 			</button>
@@ -135,6 +136,22 @@
 		justify-content: center;
 		border-radius: 12px;
 		cursor: pointer;
+		transition: rotate 0.3s ease-out;
+		transform-style: preserve-3d;
+
+		&.flip {
+			rotate: y 180deg;
+			pointer-events: none;
+		}
+
+		& .back {
+			position: absolute;
+			inset: 0;
+			display: grid;
+			place-content: center;
+			backface-visibility: hidden;
+			rotate: y 180deg;
+		}
 
 		&.selected {
 			border: 4px solid var(--border);
@@ -153,12 +170,11 @@
 	.timer {
 		transition: color 0.3s ease;
 	}
-  .menu {
-    display: flex;
-    align-items: center;
-    justify-items: center;
-
-  }
+	.menu {
+		display: flex;
+		align-items: center;
+		justify-items: center;
+	}
 
 	.pulse {
 		color: var(--pulse);
