@@ -24,6 +24,22 @@
 	function shuffle<T>(items: T[]) {
 		return items.sort(() => Math.random() - 0.5);
 	}
+
+	$: selected.length === 2 && matchCards();
+
+	function selectCard(cardIndex: number) {
+		selected = selected.concat(cardIndex);
+	}
+	function matchCards() {
+		const [first, second] = selected;
+
+		if (grid[first] === grid[second]) {
+			matches = matches.concat(grid[first]);
+		}
+		setTimeout(() => {
+			selected = [];
+		}, 300);
+	}
 </script>
 
 {#if state === 'start'}
@@ -32,11 +48,26 @@
 {/if}
 
 {#if state === 'playing'}
+	<div class="matches">
+		{#each matches as card}
+			<div>{card}</div>
+		{/each}
+	</div>
 	<div class="cards">
 		{#each grid as card, index}
-				<div class="card">
+			{@const isSelected = selected.includes(index)}
+			{@const isSelectedOrMatched = selected.includes(index) || matches.includes(card)}
+			{@const match = matches.includes(card)}
+			<button
+				class="card"
+				on:click={() => selectCard(index)}
+				class:selected={isSelected}
+				disabled={isSelectedOrMatched}
+			>
+				<div class:match>
 					{card}
 				</div>
+			</button>
 		{/each}
 	</div>
 {/if}
@@ -55,7 +86,7 @@
 	.cards {
 		display: grid;
 		grid-template-columns: repeat(5, 1fr);
-    gap: 0.4rem;
+		gap: 0.4rem;
 	}
 
 	.card {
@@ -63,13 +94,24 @@
 		width: 140px;
 		font-size: 4rem;
 		background-color: var(--bg-2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 12px;
+		cursor: pointer;
 
 		&.selected {
 			border: 4px solid var(--border);
 		}
+		& .match {
+			transition: opacity 0.3s ease-out;
+			opacity: 0.4;
+		}
+	}
+	.matches {
+		display: flex;
+		gap: 1rem;
+		margin-block: 2rem;
+		font-size: 3rem;
 	}
 </style>
