@@ -54,6 +54,13 @@
 	}
 	function handlePlayAgain() {
 		state = 'playing';
+		createGrid();
+		timerId && clearInterval(timerId);
+		grid = createGrid();
+		maxMatches = grid.length / 2;
+		selected = [];
+		matches = [];
+		timerId = null;
 		time = 60;
 	}
 	function gameWon() {
