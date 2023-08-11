@@ -52,10 +52,10 @@
 			selected = [];
 		}, 300);
 	}
-  function handlePlayAgain() {
-    state = 'playing'
-    time = 20;
-  }
+	function handlePlayAgain() {
+		state = 'playing';
+		time = 20;
+	}
 	$: if (state === 'playing') {
 		!timerId && startGameTimer();
 	}
@@ -69,10 +69,13 @@
 {/if}
 
 {#if state === 'playing'}
-	<h1 class="timer" class:pulse={time <= 10}>
-		{time}
-	</h1>
+	<div class="menu">
+		<h1 class="timer" class:pulse={time <= 10} style="margin-top: 35px">
+			{time}
+		</h1>
 
+		<button on:click={() => (state = 'paused')}> Pause </button>
+	</div>
 	<div class="matches">
 		{#each matches as card}
 			<div>{card}</div>
@@ -105,6 +108,10 @@
 {#if state === 'won'}
 	<h1>You Won! 🎉</h1>
 	<button on:click={() => handlePlayAgain()}>Play Again!</button>
+{/if}
+
+{#if state === 'paused'}
+	<button on:click={() => (state = 'playing')}> resume </button>
 {/if}
 
 <style>
@@ -142,6 +149,12 @@
 	.timer {
 		transition: color 0.3s ease;
 	}
+  .menu {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+
+  }
 
 	.pulse {
 		color: var(--pulse);
