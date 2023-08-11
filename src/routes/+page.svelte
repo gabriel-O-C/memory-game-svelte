@@ -10,6 +10,18 @@
 	let selected: number[] = [];
 	let matches: string[] = [];
 
+	let timerId: NodeJS.Timer | null = null;
+
+	let time = 20;
+	function startGameTimer() {
+		function countdown() {
+			state !== 'paused' ? (time -= 1) : null;
+		}
+		timerId = setInterval(countdown, 1000);
+	}
+	function gameLost() {
+		state = 'lost';
+	}
 	function createGrid() {
 		const cards = new Set<string>();
 		const maxSize = size / 2;
@@ -40,6 +52,11 @@
 			selected = [];
 		}, 300);
 	}
+	$: if (state === 'playing') {
+		!timerId && startGameTimer();
+	}
+
+	$: time === 0 && gameLost();
 </script>
 
 {#if state === 'start'}
@@ -48,6 +65,10 @@
 {/if}
 
 {#if state === 'playing'}
+	<h1 class="timer" class:pulse={time <= 10}>
+		{time}
+	</h1>
+
 	<div class="matches">
 		{#each matches as card}
 			<div>{card}</div>
@@ -78,7 +99,7 @@
 {/if}
 
 {#if state === 'won'}
-	<h1>You Lost! 🎉</h1>
+	<h1>You Won! 🎉</h1>
 	<button on:click={() => (state = 'playing')}>Play Again!</button>
 {/if}
 
@@ -113,5 +134,19 @@
 		gap: 1rem;
 		margin-block: 2rem;
 		font-size: 3rem;
+	}
+	.timer {
+		transition: color 0.3s ease;
+	}
+
+	.pulse {
+		color: var(--pulse);
+		animation: pulse 1s infinite ease;
+	}
+
+	@keyframes pulse {
+		to {
+			scale: 1.4;
+		}
 	}
 </style>
