@@ -52,6 +52,10 @@
 			selected = [];
 		}, 300);
 	}
+  function handlePlayAgain() {
+    state = 'playing'
+    time = 20;
+  }
 	$: if (state === 'playing') {
 		!timerId && startGameTimer();
 	}
@@ -95,12 +99,12 @@
 
 {#if state === 'lost'}
 	<h1>You Lost! 💩</h1>
-	<button on:click={() => (state = 'playing')}>Play Again!</button>
+	<button on:click={() => handlePlayAgain()}>Play Again!</button>
 {/if}
 
 {#if state === 'won'}
 	<h1>You Won! 🎉</h1>
-	<button on:click={() => (state = 'playing')}>Play Again!</button>
+	<button on:click={() => handlePlayAgain()}>Play Again!</button>
 {/if}
 
 <style>
