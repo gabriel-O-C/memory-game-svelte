@@ -1,10 +1,8 @@
 <script lang="ts">
 	import Cards from "$lib/components/Cards.svelte";
 	import Matches from "$lib/components/Matches.svelte";
-	import { emoji } from './emoji';
-
-	type State = 'start' | 'playing' | 'paused' | 'won' | 'lost';
-	let state: State = 'start';
+	import { emoji } from "$lib/emoji";
+	import { state } from '../stores/gameState';
 
 	let size = 20;
 	let grid = createGrid() ?? [];
@@ -17,12 +15,12 @@
 	let time = 60;
 	function startGameTimer() {
 		function countdown() {
-			state !== 'paused' ? (time -= 1) : null;
+			$state !== 'paused' ? (time -= 1) : null;
 		}
 		timerId = setInterval(countdown, 1000);
 	}
 	function gameLost() {
-		state = 'lost';
+		$state = 'lost';
 	}
 	function createGrid() {
 		const cards = new Set<string>();
@@ -55,7 +53,7 @@
 		}, 500);
 	}
 	function handlePlayAgain() {
-		state = 'playing';
+		$state = 'playing';
 		createGrid();
 		timerId && clearInterval(timerId);
 		grid = createGrid();
@@ -66,9 +64,9 @@
 		time = 60;
 	}
 	function gameWon() {
-		state = 'won';
+		$state = 'won';
 	}
-	$: if (state === 'playing') {
+	$: if ($state === 'playing') {
 		!timerId && startGameTimer();
 	}
 
@@ -76,18 +74,18 @@
 	$: maxMatches === matches.length && gameWon();
 </script>
 
-{#if state === 'start'}
+{#if $state === 'start'}
 	<h1>Matching game</h1>
-	<button on:click={() => (state = 'playing')}>Play</button>
+	<button on:click={() => ($state = 'playing')}>Play</button>
 {/if}
 
-{#if state === 'playing'}
+{#if $state === 'playing'}
 	<div class="menu">
 		<h1 class="timer" class:pulse={time <= 10} style="margin-top: 35px">
 			{time}
 		</h1>
 
-		<button on:click={() => (state = 'paused')}> Pause </button>
+		<button on:click={() => ($state = 'paused')}> Pause </button>
 	</div>
 	
 	<Matches {matches} />
@@ -95,18 +93,18 @@
 
 {/if}
 
-{#if state === 'lost'}
+{#if $state === 'lost'}
 	<h1>You Lost! 💩</h1>
 	<button on:click={() => handlePlayAgain()}>Play Again!</button>
 {/if}
 
-{#if state === 'won'}
+{#if $state === 'won'}
 	<h1>You Won! 🎉</h1>
 	<button on:click={() => handlePlayAgain()}>Play Again!</button>
 {/if}
 
-{#if state === 'paused'}
-	<button on:click={() => (state = 'playing')}> resume </button>
+{#if $state === 'paused'}
+	<button on:click={() => ($state = 'playing')}> resume </button>
 {/if}
 
 <style>
