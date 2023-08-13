@@ -89,15 +89,11 @@
 
 {/if}
 
-{#if $state === 'lost'}
-	<h1>You Lost! 💩</h1>
+{#if $state === 'lost' || $state === 'won'}
+	<h1>You {$state}! {$state === 'lost' ? '💩' : '🎉'}</h1>
 	<button on:click={() => handlePlayAgain()}>Play Again!</button>
 {/if}
 
-{#if $state === 'won'}
-	<h1>You Won! 🎉</h1>
-	<button on:click={() => handlePlayAgain()}>Play Again!</button>
-{/if}
 
 {#if $state === 'paused'}
 	<button on:click={() => ($state = 'playing')}> resume </button>
