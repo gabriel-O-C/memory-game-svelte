@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Cards from "$lib/components/Cards.svelte";
+	import Matches from "$lib/components/Matches.svelte";
 	import { emoji } from './emoji';
 
 	type State = 'start' | 'playing' | 'paused' | 'won' | 'lost';
@@ -88,12 +89,8 @@
 
 		<button on:click={() => (state = 'paused')}> Pause </button>
 	</div>
-	<div class="matches">
-		{#each matches as card}
-			<div>{card}</div>
-		{/each}
-	</div>
 	
+	<Matches {matches} />
 	<Cards {grid} {selected} {matches} {selectCard} />
 
 {/if}
@@ -114,12 +111,7 @@
 
 <style>
 
-	.matches {
-		display: flex;
-		gap: 1rem;
-		margin-block: 2rem;
-		font-size: 3rem;
-	}
+
 	.timer {
 		transition: color 0.3s ease;
 	}
