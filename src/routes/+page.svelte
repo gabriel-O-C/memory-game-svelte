@@ -2,7 +2,7 @@
 	import Cards from "$lib/components/Cards.svelte";
 	import Matches from "$lib/components/Matches.svelte";
 	import { emoji } from "$lib/emoji";
-	import { state } from '../stores/gameState';
+	import { gameLost, gameWon, state } from '../stores/gameState';
 
 	let size = 20;
 	let grid = createGrid() ?? [];
@@ -19,9 +19,7 @@
 		}
 		timerId = setInterval(countdown, 1000);
 	}
-	function gameLost() {
-		$state = 'lost';
-	}
+
 	function createGrid() {
 		const cards = new Set<string>();
 		const maxSize = size / 2;
@@ -63,9 +61,7 @@
 		timerId = null;
 		time = 60;
 	}
-	function gameWon() {
-		$state = 'won';
-	}
+
 	$: if ($state === 'playing') {
 		!timerId && startGameTimer();
 	}
