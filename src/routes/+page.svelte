@@ -9,15 +9,18 @@
 	let maxMatches = grid.length / 2;
 	let selected: number[] = [];
 	let matches: string[] = [];
-
 	let timerId: NodeJS.Timer | null = null;
-
 	let time = 60;
+
 	function startGameTimer() {
 		function countdown() {
 			$state !== 'paused' ? (time -= 1) : null;
 		}
 		timerId = setInterval(countdown, 1000);
+	}
+
+	function shuffle<T>(items: T[]) {
+		return items.sort(() => Math.random() - 0.5);
 	}
 
 	function createGrid() {
@@ -31,15 +34,11 @@
 		}
 		return shuffle([...cards, ...cards]);
 	}
-	function shuffle<T>(items: T[]) {
-		return items.sort(() => Math.random() - 0.5);
-	}
-
-	$: selected.length === 2 && matchCards();
 
 	function selectCard(cardIndex: number) {
 		selected = selected.concat(cardIndex);
 	}
+
 	function matchCards() {
 		const [first, second] = selected;
 
@@ -48,8 +47,9 @@
 		}
 		setTimeout(() => {
 			selected = [];
-		}, 500);
+		}, 300);
 	}
+
 	function handlePlayAgain() {
 		$state = 'playing';
 		createGrid();
@@ -65,7 +65,7 @@
 	$: if ($state === 'playing') {
 		!timerId && startGameTimer();
 	}
-
+	$: selected.length === 2 && matchCards();
 	$: time === 0 && gameLost();
 	$: maxMatches === matches.length && gameWon();
 </script>
